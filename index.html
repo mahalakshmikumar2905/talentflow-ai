@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentFlow AI — Autonomous Job Application Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="h-full flex flex-col font-sans">
+
+    <!-- Top Navigation -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="bg-indigo-600 p-2 rounded-xl text-white font-bold flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                <i data-lucide="zap" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight">TalentFlow <span class="text-indigo-400">AI</span></h1>
+                <p class="text-xs text-slate-400">Autonomous Job Matcher & Auto-Applier</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span class="w-2 h-2 mr-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                Backend API Connected
+            </span>
+            <button onclick="triggerAutoApply()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-lg shadow-indigo-600/20 flex items-center space-x-2">
+                <i data-lucide="play" class="w-4 h-4"></i>
+                <span>Run Auto-Apply Bot</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 overflow-y-auto p-6 max-w-7xl mx-auto w-full space-y-6">
+        
+        <!-- Stats / Metric Bar -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                <div class="text-slate-400 text-xs font-medium">Jobs Scraped Today</div>
+                <div class="text-2xl font-bold mt-1 text-slate-100">42</div>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                <div class="text-slate-400 text-xs font-medium">Green Match (&gt;85%)</div>
+                <div class="text-2xl font-bold mt-1 text-emerald-400">12</div>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                <div class="text-slate-400 text-xs font-medium">Applications Sent</div>
+                <div class="text-2xl font-bold mt-1 text-indigo-400">8</div>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                <div class="text-slate-400 text-xs font-medium">Interview Invites</div>
+                <div class="text-2xl font-bold mt-1 text-amber-400">3</div>
+            </div>
+        </div>
+
+        <!-- Job Discovery & Matching Section -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-lg font-semibold">Live Job Matches & ATS Optimizer</h2>
+                    <p class="text-xs text-slate-400">Green = Perfect Match, Yellow = Needs Review, Red = Poor Fit</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <input type="text" id="jobRoleInput" placeholder="Role (e.g. Full Stack Engineer)" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                    <input type="text" id="locationInput" placeholder="Location (e.g. Remote / NYC)" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                    <button onclick="searchJobs()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">Search</button>
+                </div>
+            </div>
+
+            <!-- Job Cards Container -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4" id="jobCardsContainer">
+                
+                <!-- Sample Card 1: Green Match -->
+                <div class="bg-slate-950 border border-emerald-500/30 rounded-xl p-4 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Green Match: 94%</span>
+                            <span class="text-xs text-slate-400">2h ago</span>
+                        </div>
+                        <h3 class="font-bold text-base text-slate-100">Senior Full Stack Engineer</h3>
+                        <p class="text-xs text-slate-400 mb-3">Stripe • Remote, US</p>
+                        <div class="flex flex-wrap gap-1 mb-4">
+                            <span class="px-2 py-0.5 bg-slate-900 text-slate-300 text-[10px] rounded border border-slate-800">React</span>
+                            <span class="px-2 py-0.5 bg-slate-900 text-slate-300 text-[10px] rounded border border-slate-800">TypeScript</span>
+                            <span class="px-2 py-0.5 bg-slate-900 text-slate-300 text-[10px] rounded border border-slate-800">Node.js</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 pt-3 border-t border-slate-900">
+                        <button onclick="tailorAndApply('Senior Full Stack Engineer at Stripe')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-2 rounded-lg text-xs font-medium transition text-center">Tailor & Auto-Apply</button>
+                        <button onclick="inspectCV()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg text-xs font-medium transition">View CV</button>
+                    </div>
+                </div>
+
+                <!-- Sample Card 2: Yellow Match -->
+                <div class="bg-slate-950 border border-amber-500/30 rounded-xl p-4 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">Yellow Match: 72%</span>
+                            <span class="text-xs text-slate-400">5h ago</span>
+                        </div>
+                        <h3 class="font-bold text-base text-slate-100">Frontend React Developer</h3>
+                        <p class="text-xs text-slate-400 mb-3">Vercel • San Francisco, CA</p>
+                        <div class="flex flex-wrap gap-1 mb-4">
+                            <span class="px-2 py-0.5 bg-slate-900 text-slate-300 text-[10px] rounded border border-slate-800">React</span>
+                            <span class="px-2 py-0.5 bg-slate-900 text-slate-300 text-[10px] rounded border border-slate-800">Next.js</span>
+                            <span class="px-2 py-0.5 bg-slate-900 text-amber-400 text-[10px] rounded border border-amber-500/20">GraphQL (Missing)</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 pt-3 border-t border-slate-900">
+                        <button onclick="tailorAndApply('Frontend React Developer at Vercel')" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white py-2 rounded-lg text-xs font-medium transition text-center">Tailor & Auto-Apply</button>
+                        <button onclick="inspectCV()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg text-xs font-medium transition">View CV</button>
+                    </div>
+                </div>
+
+                <!-- Sample Card 3: Red Match -->
+                <div class="bg-slate-950 border border-rose-500/30 rounded-xl p-4 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">Red Match: 45%</span>
+                            <span class="text-xs text-slate-400">1d ago</span>
+                        </div>
+                        <h3 class="font-bold text-base text-slate-100">Senior Embedded Engineer</h3>
+                        <p class="text-xs text-slate-400 mb-3">Tesla • Austin, TX</p>
+                        <div class="flex flex-wrap gap-1 mb-4">
+                            <span class="px-2 py-0.5 bg-slate-900 text-rose-400 text-[10px] rounded border border-rose-500/20">C++ (Missing)</span>
+                            <span class="px-2 py-0.5 bg-slate-900 text-rose-400 text-[10px] rounded border border-rose-500/20">RTOS (Missing)</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 pt-3 border-t border-slate-900">
+                        <button disabled class="flex-1 bg-slate-900 text-slate-600 py-2 rounded-lg text-xs font-medium cursor-not-allowed text-center">Skipped (Low Match)</button>
+                        <button onclick="inspectCV()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg text-xs font-medium transition">View CV</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Master Profile & Application Log Hub -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                <h3 class="font-semibold text-base mb-4 flex items-center justify-between">
+                    <span>Master Profile & Experience</span>
+                    <button onclick="saveProfile()" class="text-xs text-indigo-400 hover:underline">Save Profile</button>
+                </h3>
+                <textarea id="masterProfileText" rows="6" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs text-slate-300 focus:outline-none focus:border-indigo-500">Name: Arun Kumar
+Title: Full Stack Software Engineer
+Experience: 4 years building scalable web apps with React, Node.js, Python, PostgreSQL, and AWS.
+Education: B.Tech in Computer Science</textarea>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                <h3 class="font-semibold text-base mb-4">Live Activity & Daily Updates</h3>
+                <div id="activityLog" class="space-y-3 text-xs text-slate-300">
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                        <span class="text-emerald-400 font-medium">Applied: Senior Full Stack Engineer @ Stripe</span>
+                        <span class="text-slate-500">10 mins ago</span>
+                    </div>
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                        <span class="text-amber-400 font-medium">Email Match: Interview Prep generated for Vercel</span>
+                        <span class="text-slate-500">1 hour ago</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-indigo-400 font-medium">System initialized & scraper running</span>
+                        <span class="text-slate-500">3 hours ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        async function triggerAutoApply() {
+            alert("🚀 Triggering Backend Playwright Auto-Applier task across matched Greenhouse forms...");
+            try {
+                const res = await fetch('http://localhost:8000/api/tailor-cv', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        master_cv: document.getElementById('masterProfileText').value,
+                        job_description: "Looking for Senior Full Stack Engineer with React, Node.js and TypeScript.",
+                        job_title: "Senior Full Stack Engineer"
+                    })
+                });
+                const data = await res.json();
+                console.log(data);
+                alert("✅ Success! Tailored Match Score: " + data.match_score + "%");
+            } catch (err) {
+                alert("⚠️ Backend server not running locally on port 8000. Start server.py first!");
+            }
+        }
+
+        async function tailorAndApply(jobTitle) {
+            alert("✨ Tailoring CV specifically for: " + jobTitle + " with optimized ATS Keywords...");
+        }
+
+        function inspectCV() {
+            alert("📄 Displaying customized tailored CV & Cover Letter for this application.");
+        }
+
+        function searchJobs() {
+            const role = document.getElementById('jobRoleInput').value;
+            const loc = document.getElementById('locationInput').value;
+            alert(`🔍 Scraping job boards for "${role || 'Software Engineer'}" in "${loc || 'Remote'}"...`);
+        }
+
+        function saveProfile() {
+            alert("💾 Master profile saved successfully!");
+        }
+    </script>
+</body>
+</html>
